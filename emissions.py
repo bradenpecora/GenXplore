@@ -12,10 +12,11 @@ Webber Energy Group
 # Import packages
 import os
 from sys import exit
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
+from pathlib import Path
 
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 from matplotlib import style
 
 plt.style.use("default")
@@ -33,15 +34,16 @@ def total_annual_emissions(scenario, years):
     etot = []
     for i in range(len(years)):
         if settings.multi_stage == 1:
-            path = (
+            path: Path = (
                 settings.root_dir
-                + scenario
-                + "/Results"
-                + "/Results_p%s" % str(i + 1)
-                + "/emissions.csv"
+                / scenario
+                / "Results"
+                / "Results_p%s"
+                % str(i + 1)
+                / "emissions.csv"
             )
         elif settings.multi_stage == 0:
-            path = settings.root_dir + scenario + "/Results" + "/emissions.csv"
+            path: Path = settings.root_dir / scenario / "Results" / "emissions.csv"
         etot_i = pd.read_csv(path)
         etot_i = etot_i.T
         etot_i.columns = etot_i.iloc[0]
@@ -106,22 +108,14 @@ def cumulative_emissions_all_scenarios():
     emissions_df["Year"] = all_years
     emissions_df.set_index("Year", inplace=True)
 
-    path = (
-        settings.root_dir
-        + "/GenXplore_results"
-        + "/all_scenarios"
-        + "/"
-        + str(settings.region)
+    path: Path = (
+        settings.root_dir / "GenXplore_results" / "all_scenarios" / str(settings.region)
     )
     if os.path.exists(path):
-        emissions_df.to_csv(
-            path + "/" + str(settings.region) + "_" + "emissions_table.csv"
-        )
+        emissions_df.to_csv(path / str(settings.region) + "_" + "emissions_table.csv")
     else:
         os.makedirs(path)
-        emissions_df.to_csv(
-            path + "/" + str(settings.region) + "_" + "emissions_table.csv"
-        )
+        emissions_df.to_csv(path / str(settings.region) + "_" + "emissions_table.csv")
     return emissions_df
 
 
@@ -235,23 +229,19 @@ def cumulative_emissions_diff_plotter(emissions_df, year):
                     fontsize=15,
                 )
 
-    path = (
-        settings.root_dir
-        + "GenXplore_results"
-        + "/all_scenarios"
-        + "/"
-        + str(settings.region)
+    path: Path = (
+        settings.root_dir / "GenXplore_results" / "all_scenarios" / str(settings.region)
     )
     if os.path.exists(path):
         plt.savefig(
-            path + "/%s_emission_differences_to_%s.png" % (settings.region, str(year)),
+            path / "/%s_emission_differences_to_%s.png" % (settings.region, str(year)),
             bbox_inches="tight",
         )
         plt.clf()
     else:
         os.makedirs(path)
         plt.savefig(
-            path + "/%s_emission_differences_to_%s.png" % (settings.region, str(year)),
+            path / "/%s_emission_differences_to_%s.png" % (settings.region, str(year)),
             bbox_inches="tight",
         )
         plt.clf()

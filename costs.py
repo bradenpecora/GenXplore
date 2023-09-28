@@ -11,11 +11,12 @@ Webber Energy Group
 
 # Import packages
 import os
+from pathlib import Path
 from sys import exit
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
 
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 from matplotlib import style
 
 plt.style.use("default")
@@ -25,10 +26,9 @@ from matplotlib.lines import Line2D
 
 pd.options.mode.chained_assignment = None
 
+import settings
 from capacity_expansion import capacity_by_type, capacity_by_type_per_scenario
 from transmission_expansion import capacity_by_line
-
-import settings
 
 
 # Functions
@@ -36,15 +36,16 @@ def annual_fix_costs(scenario, years):
     cfix = []
     for i in range(len(years)):
         if settings.multi_stage == 1:
-            path = (
+            path: Path = (
                 settings.root_dir
-                + scenario
-                + "/Results"
-                + "/Results_p%s" % str(i + 1)
-                + "/costs.csv"
+                / scenario
+                / "Results"
+                / "Results_p%s"
+                % str(i + 1)
+                / "costs.csv"
             )
         elif settings.multi_stage == 0:
-            path = settings.root_dir + scenario + "/Results" + "/costs.csv"
+            path: Path = settings.root_dir / scenario / "Results" / "costs.csv"
         cfix_i = pd.read_csv(path)
         cfix_i = cfix_i[cfix_i["Costs"] == "cFix"]
         cfix_i.drop(["Total", "Costs"], axis=1, inplace=True)
@@ -62,15 +63,16 @@ def annual_var_costs(scenario, years):
     cvar = []
     for i in range(len(years)):
         if settings.multi_stage == 1:
-            path = (
+            path: Path = (
                 settings.root_dir
-                + scenario
-                + "/Results"
-                + "/Results_p%s" % str(i + 1)
-                + "/costs.csv"
+                / scenario
+                / "Results"
+                / "/Results_p%s"
+                % str(i + 1)
+                / "costs.csv"
             )
         elif settings.multi_stage == 0:
-            path = settings.root_dir + scenario + "/Results" + "/costs.csv"
+            path: Path = settings.root_dir / scenario / "Results" / "costs.csv"
         cvar_i = pd.read_csv(path)
         cvar_i = cvar_i[cvar_i["Costs"] == "cVar"]
         cvar_i.drop(["Total", "Costs"], axis=1, inplace=True)
@@ -88,15 +90,16 @@ def annual_nse_costs(scenario, years):
     cnse = []
     for i in range(len(years)):
         if settings.multi_stage == 1:
-            path = (
+            path: Path = (
                 settings.root_dir
-                + scenario
-                + "/Results"
-                + "/Results_p%s" % str(i + 1)
-                + "/costs.csv"
+                / scenario
+                / "Results"
+                / "Results_p%s"
+                % str(i + 1)
+                / "costs.csv"
             )
         elif settings.multi_stage == 0:
-            path = settings.root_dir + scenario + "/Results" + "/costs.csv"
+            path: Path = settings.root_dir / scenario / "Results" / "costs.csv"
         cnse_i = pd.read_csv(path)
         cnse_i = cnse_i[cnse_i["Costs"] == "cNSE"]
         cnse_i.drop(["Total", "Costs"], axis=1, inplace=True)
@@ -114,15 +117,16 @@ def annual_start_costs(scenario, years):
     cstart = []
     for i in range(len(years)):
         if settings.multi_stage == 1:
-            path = (
+            path: Path = (
                 settings.root_dir
-                + scenario
-                + "/Results"
-                + "/Results_p%s" % str(i + 1)
-                + "/costs.csv"
+                / scenario
+                / "Results"
+                / "Results_p%s"
+                % str(i + 1)
+                / "costs.csv"
             )
         elif settings.multi_stage == 0:
-            path = settings.root_dir + scenario + "/Results" + "/costs.csv"
+            path: Path = settings.root_dir / scenario / "Results" / "costs.csv"
         cstart_i = pd.read_csv(path)
         cstart_i = cstart_i[cstart_i["Costs"] == "cStart"]
         cstart_i.drop(["Total", "Costs"], axis=1, inplace=True)
@@ -140,15 +144,18 @@ def annual_network_expansion_costs(scenario, years):
     cnetworkexpansion = []
     for i in range(len(years)):
         if settings.multi_stage == 1:
-            path = (
+            path: Path = (
                 settings.root_dir
-                + scenario
-                + "/Results"
-                + "/Results_p%s" % str(i + 1)
-                + "/network_expansion.csv"
+                / scenario
+                / "Results"
+                / "Results_p%s"
+                % str(i + 1)
+                / "network_expansion.csv"
             )
         elif settings.multi_stage == 0:
-            path = settings.root_dir + scenario + "/Results" + "/networkexpansion.csv"
+            path: Path = (
+                settings.root_dir / scenario / "Results" / "networkexpansion.csv"
+            )
         cnetworkexpansion_i = pd.read_csv(path)
         if settings.region == "ERCOT":
             cnetworkexpansion_i = cnetworkexpansion_i[
@@ -228,21 +235,17 @@ def cumulative_cost_diff_all_scenarios():
     cost_diffs_df["Year"] = all_years
     cost_diffs_df.set_index("Year", inplace=True)
 
-    path = (
-        settings.root_dir
-        + "/GenXplore_results"
-        + "/all_scenarios"
-        + "/"
-        + str(settings.region)
+    path: Path = (
+        settings.root_dir / "GenXplore_results" / "all_scenarios" / str(settings.region)
     )
     if os.path.exists(path):
         cost_diffs_df.to_csv(
-            path + "/" + str(settings.region) + "_" + "cost_differences_table.csv"
+            path / str(settings.region) + "_" + "cost_differences_table.csv"
         )
     else:
         os.makedirs(path)
         cost_diffs_df.to_csv(
-            path + "/" + str(settings.region) + "_" + "cost_differences_table.csv"
+            path / str(settings.region) + "_" + "cost_differences_table.csv"
         )
     return cost_diffs_df
 
@@ -346,16 +349,12 @@ def cumulative_cost_difference_plotter(cost_diffs_df, year):
                     fontsize=15,
                 )
 
-    path = (
-        settings.root_dir
-        + "GenXplore_results"
-        + "/all_scenarios"
-        + "/"
-        + str(settings.region)
+    path: Path = (
+        settings.root_dir / "GenXplore_results" / "all_scenarios" / str(settings.region)
     )
     if os.path.exists(path):
         plt.savefig(
-            path + "/%s_cost_differences_to_%s.png" % (settings.region, str(year)),
+            path / "/%s_cost_differences_to_%s.png" % (settings.region, str(year)),
             bbox_inches="tight",
         )
         plt.clf()
@@ -363,7 +362,8 @@ def cumulative_cost_difference_plotter(cost_diffs_df, year):
         os.makedirs(path)
         plt.savefig(
             path
-            + "/%s_cost_differences_to_%s.png" % (settings.settings.region, str(year)),
+            / "/%s_cost_differences_to_%s.png"
+            % (settings.settings.region, str(year)),
             bbox_inches="tight",
         )
         plt.clf()

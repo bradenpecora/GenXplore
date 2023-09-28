@@ -11,10 +11,11 @@ Webber Energy Group
 
 # Import packages
 import os
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
+from pathlib import Path
 
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 from matplotlib import style
 
 plt.style.use("default")
@@ -26,18 +27,20 @@ pd.options.mode.chained_assignment = None
 
 import settings
 
+
 # Functions
 def optimal_connection(scenario, line):
     new_line_cap_tot = []
     for i in range(4):
         if settings.multi_stage == 1:
-            path = (
+            path: Path = (
                 settings.root_dir
-                + scenario
-                + "Results/Results_p%s/network_expansion.csv" % (scenario, str(i + 1))
+                / scenario
+                / "Results/Results_p%s/network_expansion.csv"
+                % (scenario, str(i + 1))
             )
         elif settings.multi_stage == 0:
-            path = settings.root_dir + scenario + "Results/network_expansion.csv"
+            path: Path = settings.root_dir / scenario / "Results/network_expansion.csv"
         connect_i = pd.read_csv(path)
         new_line_cap = connect_i[connect_i["Line"] == line]["New_Trans_Capacity"].iloc[
             0
@@ -57,9 +60,9 @@ def capacity_by_line():
 
     for i in range(len(scenarios)):
         scenario = scenarios[i]
-        path = settings.root_dir + scenario
+        path: Path = settings.root_dir / scenario
 
-        trans_cap = pd.read_csv(path + "/Inputs/Inputs_p1/Network.csv")
+        trans_cap = pd.read_csv(path / "/Inputs/Inputs_p1/Network.csv")
         trans_cap = trans_cap[["Network_Lines", "Line_Max_Flow_MW"]]
         trans_cap.rename(
             {"Network_Lines": "Line", "Line_Max_Flow_MW": years[0]},
@@ -69,16 +72,15 @@ def capacity_by_line():
 
         for j in range(len(years) - 1):
             if settings.multi_stage == 1:
-                path = (
+                path: Path = (
                     settings.root_dir
-                    + scenario
-                    + "/Results/Results_p"
-                    + str(j + 1)
-                    + "/network_expansion.csv"
+                    / scenario
+                    / f"/Results/Results_p{j+1}"
+                    / "/network_expansion.csv"
                 )
             elif settings.multi_stage == 0:
-                path = (
-                    settings.root_dir + scenario + "/Results" + "/network_expansion.csv"
+                path: Path = (
+                    settings.root_dir / scenario / "Results" / "network_expansion.csv"
                 )
             trans_loc = pd.read_csv(path)
             trans_loc = trans_loc[["Line", "New_Trans_Capacity"]]
@@ -94,24 +96,25 @@ def capacity_by_line():
         trans_cap.set_index("Line", inplace=True)
 
         # Write to csv file
-        path = (
-            settings.root_dir + "GenXplore_results/" + scenario + "/" + settings.region
+        path: Path = (
+            settings.root_dir / "GenXplore_results" / scenario / settings.region
         )
         if os.path.exists(path):
-            trans_cap.to_csv(path + "/" + "trans_cap_by_line.csv")
+            trans_cap.to_csv(path / "trans_cap_by_line.csv")
         else:
             os.makedirs(path)
-            trans_cap.to_csv(path + "/" + "trans_cap_by_line.csv")
+            trans_cap.to_csv(path / "trans_cap_by_line.csv")
     return
 
 
 def flow_across_line(scenario, line):
     year = list(settings.model_year.values())[0]
 
-    path = (
+    path: Path = (
         settings.root_dir
-        + scenario
-        + "/Results/%s/flow.csv" % list(settings.model_year)[0]
+        / scenario
+        / "/Results/%s/flow.csv"
+        % list(settings.model_year)[0]
     )
 
     flow = pd.read_csv(path)
@@ -151,17 +154,17 @@ def flow_across_line(scenario, line):
         verticalalignment="center",
     )
 
-    path = settings.root_dir + "/GenXplore_results/" + scenario + "/" + settings.region
+    path: Path = settings.root_dir / "GenXplore_results" / scenario / settings.region
     if os.path.exists(path):
         plt.savefig(
-            path + "/%s_flow_in_%s.png" % (settings.region, year),
+            path / "%s_flow_in_%s.png" % (settings.region, year),
             bbox_inches="tight",
         )
         plt.clf()
     else:
         os.makedirs(path)
         plt.savefig(
-            path + "/%s_flow_in_%s.png" % (settings.region, year),
+            path / "%s_flow_in_%s.png" % (settings.region, year),
             bbox_inches="tight",
         )
         plt.clf()

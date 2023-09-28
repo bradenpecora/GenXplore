@@ -11,10 +11,11 @@ Webber Energy Group
 
 # Import packages
 import os
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
+from pathlib import Path
 
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 from matplotlib import style
 
 plt.style.use("default")
@@ -43,17 +44,21 @@ def capacity_by_type():
         scenario = scenarios[i]
         if settings.multi_stage == 1:
             loc_cap = pd.read_csv(
-                settings.root_dir + scenario + "/Results/capacities_multi_stage.csv"
+                Path(settings.root_dir)
+                / scenario
+                / "/Results/capacities_multi_stage.csv"
             )
             loc_tech = pd.read_csv(
-                settings.root_dir + scenario + "/Inputs/Inputs_p1/Generators_data.csv"
+                Path(settings.root_dir)
+                / scenario
+                / "/Inputs/Inputs_p1/Generators_data.csv"
             )
         elif settings.multi_stage == 0:
             loc_cap = pd.read_csv(
-                settings.root_dir + scenario + "/Results/capacity.csv"
+                Path(settings.root_dir) / scenario / "/Results/capacity.csv"
             )
             loc_tech = pd.read_csv(
-                settings.root_dir + scenario + "/Inputs/Generators_data.csv"
+                Path(settings.root_dir) / scenario / "/Inputs/Generators_data.csv"
             )
         loc_tech = loc_tech[["Resource", "technology"]]
         loc_cap = loc_cap.merge(
@@ -148,13 +153,13 @@ def capacity_by_type_per_scenario(tot_cap):
 
         # Write to csv file
         path = (
-            settings.root_dir + "/GenXplore_results/" + scenario + "/" + settings.region
+            Path(settings.root_dir) / "GenXplore_results" / scenario / settings.region
         )
         if os.path.exists(path):
-            cap_by_type.to_csv(path + "/" + "gen_cap_by_type.csv")
+            cap_by_type.to_csv(path / "gen_cap_by_type.csv")
         else:
             os.makedirs(path)
-            cap_by_type.to_csv(path + "/" + "gen_cap_by_type.csv")
+            cap_by_type.to_csv(path / "gen_cap_by_type.csv")
     return
 
 
@@ -294,23 +299,23 @@ def capacity_by_type_plotter(tot_cap):
             fontsize=15,
         )
 
-    path = (
+    path: Path = (
         settings.root_dir
-        + "GenXplore_results"
-        + "/all_scenarios"
-        + "/"
-        + str(settings.region)
+        / "GenXplore_results"
+        / "all_scenarios"
+        / ""
+        / str(settings.region)
     )
     if os.path.exists(path):
         plt.savefig(
-            path + "/%s_capacityexpansion_stacked_bar_plot.png" % settings.region,
+            path / "%s_capacityexpansion_stacked_bar_plot.png" % settings.region,
             bbox_inches="tight",
         )
         plt.clf()
     else:
         os.makedirs(path)
         plt.savefig(
-            path + "/%s_capacityexpansion_stacked_bar_plot.png" % settings.region,
+            path / "%s_capacityexpansion_stacked_bar_plot.png" % settings.region,
             bbox_inches="tight",
         )
         plt.clf()
@@ -340,17 +345,15 @@ def spec_capacity_hbar_plotter(tech):
         scenario = scenarios[i]
         if settings.multi_stage == 1:
             loc_cap = pd.read_csv(
-                settings.root_dir + scenario + "/Results/" + year[0] + "/capacity.csv"
+                settings.root_dir / scenario / "Results" / year[0] / "capacity.csv"
             )
             loc_tech = pd.read_csv(
-                settings.root_dir + scenario + "/Inputs/Inputs_p1/Generators_data.csv"
+                settings.root_dir / scenario / "Inputs/Inputs_p1/Generators_data.csv"
             )
         elif settings.multi_stage == 0:
-            loc_cap = pd.read_csv(
-                settings.root_dir + scenario + "/Results/capacity.csv"
-            )
+            loc_cap = pd.read_csv(settings.root_dir / scenario / "Results/capacity.csv")
             loc_tech = pd.read_csv(
-                settings.root_dir + scenario + "/Inputs/Generators_data.csv"
+                settings.root_dir / scenario / "Inputs/Generators_data.csv"
             )
         loc_tech = loc_tech[["Resource", "technology"]]
         loc_cap = loc_cap.merge(
@@ -468,24 +471,23 @@ def spec_capacity_hbar_plotter(tech):
                     fontsize=15,
                 )
 
-    path = (
+    path: Path = (
         settings.root_dir
-        + "GenXplore_results"
-        + "/all_scenarios"
-        + "/"
-        + str(settings.region)
-        + "/technologies/"
+        / "GenXplore_results"
+        / "all_scenarios"
+        / str(settings.region)
+        / "technologies"
     )
     if os.path.exists(path):
         plt.savefig(
-            path + "%s_capacity_bar_plot.png" % tech,
+            path / "%s_capacity_bar_plot.png" % tech,
             bbox_inches="tight",
         )
         plt.clf()
     else:
         os.makedirs(path)
         plt.savefig(
-            path + "%s_capacity_bar_plot.png" % tech,
+            path / "%s_capacity_bar_plot.png" % tech,
             bbox_inches="tight",
         )
         plt.clf()
@@ -577,23 +579,19 @@ def tot_capacity_plotter(tot_cap):
         fontsize=20,
     )
 
-    path = (
-        settings.root_dir
-        + "GenXplore_results"
-        + "/all_scenarios"
-        + "/"
-        + str(settings.region)
+    path: Path = (
+        settings.root_dir / "GenXplore_results" / "all_scenarios" / str(settings.region)
     )
     if os.path.exists(path):
         plt.savefig(
-            path + "/%s_total_capacity_expansion.png" % settings.region,
+            path / "%s_total_capacity_expansion.png" % settings.region,
             bbox_inches="tight",
         )
         plt.clf()
     else:
         os.makedirs(path)
         plt.savefig(
-            path + "/%s_total_capacity_expansion.png" % settings.region,
+            path / "%s_total_capacity_expansion.png" % settings.region,
             bbox_inches="tight",
         )
         plt.clf()

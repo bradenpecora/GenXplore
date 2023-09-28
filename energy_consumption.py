@@ -11,11 +11,13 @@ Webber Energy Group
 
 # Import packages
 import os
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
+from pathlib import Path
 
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 from matplotlib import style
+
 
 plt.style.use("default")
 # plt.style.use("dark_background")
@@ -23,6 +25,7 @@ plt.style.use("default")
 from matplotlib.lines import Line2D
 
 pd.options.mode.chained_assignment = None
+
 
 import settings
 
@@ -44,12 +47,10 @@ def energy_consumed_by_type():
 
         if settings.multi_stage == 1:
             loc_tech = pd.read_csv(
-                settings.root_dir + scenario + "/Inputs/Inputs_p1/Generators_data.csv"
+                settings.root_dir / scenario / "Inputs/Inputs_p1/Generators_data.csv"
             )
         elif settings.multi_stage == 0:
-            loc_tech = pd.read_csv(
-                settings.root_dir + scenario + "/Generators_data.csv"
-            )
+            loc_tech = pd.read_csv(settings.root_dir / scenario / "Generators_data.csv")
         loc_tech = loc_tech[["Resource", "technology"]]
 
         for j in range(len(years)):
@@ -57,12 +58,13 @@ def energy_consumed_by_type():
             if settings.multi_stage == 1:
                 loc_energy_p = pd.read_csv(
                     settings.root_dir
-                    + scenario
-                    + "/Results/Results_p%s/power.csv" % str(j + 1)
+                    / scenario
+                    / "/Results/Results_p%s/power.csv"
+                    % str(j + 1)
                 )
             elif settings.multi_stage == 0:
                 loc_energy_p = pd.read_csv(
-                    settings.root_dir + scenario + "/Results/power.csv"
+                    settings.root_dir / scenario / "/Results/power.csv"
                 )
             loc_energy_p = loc_energy_p.T
             loc_energy_p.reset_index(inplace=True)
@@ -135,14 +137,14 @@ def energy_consumed_by_type_per_scenario(tot_energy):
         energy_by_type.set_index("technology", inplace=True)
 
         # Write to csv file
-        path = (
-            settings.root_dir + "GenXplore_results/" + scenario + "/" + settings.region
+        path: Path = (
+            settings.root_dir / "GenXplore_results" / scenario / settings.region
         )
         if os.path.exists(path):
-            energy_by_type.to_csv(path + "/energy_consumed_by_type.csv")
+            energy_by_type.to_csv(path / "energy_consumed_by_type.csv")
         else:
             os.makedirs(path)
-            energy_by_type.to_csv(path + "/energy_consumed_by_type.csv")
+            energy_by_type.to_csv(path / "energy_consumed_by_type.csv")
     return
 
 
@@ -210,7 +212,11 @@ def energy_consumed_by_type_plotter(tot_energy):
             Line2D([0], [0], color=settings.colors[tech], linewidth=15)
         )
 
-    plt.title("%s %s Fuel Mix" % (settings.region, list(settings.model_year.values())[0]), fontweight="bold", fontsize=24)
+    plt.title(
+        "%s %s Fuel Mix" % (settings.region, list(settings.model_year.values())[0]),
+        fontweight="bold",
+        fontsize=24,
+    )
     # plt.xlabel("Fuel Mix [%]", fontweight="bold", fontsize=24, labelpad=15)
     plt.yticks(yticks, ylabels, fontsize=20)
     plt.xticks([0, 1], [0, 1], fontsize=20)
@@ -246,23 +252,19 @@ def energy_consumed_by_type_plotter(tot_energy):
                 zorder=6,
             )
 
-    path = (
-        settings.root_dir
-        + "/GenXplore_results"
-        + "/all_scenarios"
-        + "/"
-        + str(settings.region)
+    path: Path = (
+        settings.root_dir / "GenXplore_results" / "all_scenarios" / str(settings.region)
     )
     if os.path.exists(path):
         plt.savefig(
-            path + "/%s_fuelmix_stacked_bar_plot.png" % settings.region,
+            path / "%s_fuelmix_stacked_bar_plot.png" % settings.region,
             bbox_inches="tight",
         )
         plt.clf()
     else:
         os.makedirs(path)
         plt.savefig(
-            path + "/%s_fuelmix_stacked_bar_plot.png" % settings.region,
+            path / "%s_fuelmix_stacked_bar_plot.png" % settings.region,
             bbox_inches="tight",
         )
         plt.clf()
@@ -278,17 +280,15 @@ def dispatch_plot_builder():
 
         if settings.multi_stage == 1:
             loc_tech = pd.read_csv(
-                settings.root_dir + scenario + "/Inputs/Inputs_p1/Generators_data.csv"
+                settings.root_dir / scenario / "Inputs/Inputs_p1/Generators_data.csv"
             )
             loc_energy_p = pd.read_csv(
-                settings.root_dir + scenario + "/Results/%s/power.csv" % year
+                settings.root_dir / scenario / "Results/%s/power.csv" % year
             )
         elif settings.multi_stage == 0:
-            loc_tech = pd.read_csv(
-                settings.root_dir + scenario + "/Generators_data.csv"
-            )
+            loc_tech = pd.read_csv(settings.root_dir / scenario / "Generators_data.csv")
             loc_energy_p = pd.read_csv(
-                settings.root_dir + scenario + "/Results/power.csv"
+                settings.root_dir / scenario / "Results/power.csv"
             )
         loc_tech = loc_tech[["Resource", "technology"]]
 
@@ -392,13 +392,13 @@ def dispatch_plot_builder():
             fontsize=15,
         )
 
-        path = (
-            settings.root_dir + "GenXplore_results/" + scenario + "/" + settings.region
+        path: Path = (
+            settings.root_dir / "GenXplore_results" / scenario / settings.region
         )
         if os.path.exists(path):
             plt.savefig(
                 path
-                + "/%s_dispatch_%s.png"
+                / "%s_dispatch_%s.png"
                 % (settings.region, list(settings.model_year.values())[0]),
                 bbox_inches="tight",
             )
@@ -407,7 +407,7 @@ def dispatch_plot_builder():
             os.makedirs(path)
             plt.savefig(
                 path
-                + "/%s_dispatch_%s.png"
+                / "%s_dispatch_%s.png"
                 % (settings.region, list(settings.model_year.values())[0]),
                 bbox_inches="tight",
             )

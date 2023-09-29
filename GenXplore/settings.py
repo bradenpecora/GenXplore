@@ -8,6 +8,7 @@ Drew Kassel
 Webber Energy Group
 
 """
+from pathlib import Path
 
 
 # Settings
@@ -15,8 +16,8 @@ def init():
     global root_dir, region, multi_stage, scenarios_dict, scenarios_bins, years_dict, model_year, hour1, hour2, technologies, tech_dict, tech_dict, tech_dict2, ERCOT_regions, ERCOT_lines, EAST_regions, EAST_lines, WECC_regions, WECC_lines, colors
 
     # root_dir = "/Users/drew.kassel/Library/CloudStorage/Box-Box/Modeling/GenX/ERCOT_WECC_Interconnect/Optimize_ERCOT_and_WECC/"
-    root_dir = (
-        "/Users/drew.kassel/Library/CloudStorage/Box-Box/Modeling/GenX/TEXAS_COUNTIES/"
+    root_dir = Path(
+        r"C:\Users\bpeco\Box\[00] Box\[01] Research\[02] Weather Year Study\v2\model_inputs"
     )
 
     region = "ALL"
@@ -24,7 +25,7 @@ def init():
     multi_stage = 1
 
     # scenarios_dict = {"US_base_v2": "US (base)"}
-    scenarios_dict = {"TEXAS_COUNTIES_2050_16zone_BAU": "Texas Counties"}
+    # scenarios_dict = {"TEXAS_COUNTIES_2050_16zone_BAU": "Texas Counties"}
 
     # scenarios_dict = {
     #     "interconnect_2035_20zone_base_0.0gw_restricted": "0.0GW (base)",
@@ -38,6 +39,10 @@ def init():
     #     "interconnect_2035_20zone_ws_6.0gw_restricted": "6.0GW (ws)",
     #     "interconnect_2035_20zone_ws_optimal_restricted": "Optimal (ws)",
     # }
+    scenarios_dict = {
+        f"base{base_year}_int2021_model2022-2025-2030": f"base{base_year}"
+        for base_year in range(2002, 2009)
+    }
 
     # scenarios_bins = {
     #     "base": list(scenarios_dict)[0:5],
@@ -52,10 +57,11 @@ def init():
         "EndCap_p1": "2022",
         "EndCap_p2": "2025",
         "EndCap_p3": "2030",
-        "EndCap_p4": "2040",
-        "EndCap_p5": "2050",
+        "EndCap_p4": "2035",
     }
-    model_year = {"Results_p5": "2050"}
+    model_year = {"Results_p4": "2035"}
+
+    # for dispatch plot
     hour1 = 1032
     hour2 = 1152
 
@@ -123,61 +129,12 @@ def init():
         "Zone16": "9_sansaba",
     }
     ERCOT_lines = [
-        # "1",
-        # "2",
-        # "3",
-        # "4",
-        # "5",
-        # "6",
-        # "7",
-        # "8",
-        # "9",
-        # "10",
-        # "11",
-        # "12",
-        # "13",
-        # "14",
-        # "15",
-        # "16",
-        # "17",
-        # "18",
-        # "19",
-        # "20",
-        # "21",
-        # "22",
-        # "23",
-        # "24",
-        # "25",
-        # "26",
-        # "27",
-        # "32",
-    ]
-
-    EAST_regions = {
-        "Zone1": "18_newengland",
-        "Zone2": "19_newyork",
-        "Zone3": "20_pjm",
-        "Zone4": "21_miso",
-        "Zone5": "22_spp",
-        "Zone7": "24_southeast",
-        "Zone8": "25_florida",
-    }
-    EAST_lines = [
         "1",
         "2",
         "3",
         "4",
         "5",
         "6",
-    ]
-
-    WECC_regions = {
-        "Zone6": "23_caiso",
-        "Zone9": "26_southwest",
-        "Zone10": "27_northwest",
-        "Zone11": "28_rockymountains",
-    }
-    WECC_lines = [
         "7",
         "8",
         "9",
@@ -186,7 +143,55 @@ def init():
         "12",
         "13",
         "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
     ]
+
+    # EAST_regions = {
+    #     "Zone1": "18_newengland",
+    #     "Zone2": "19_newyork",
+    #     "Zone3": "20_pjm",
+    #     "Zone4": "21_miso",
+    #     "Zone5": "22_spp",
+    #     "Zone7": "24_southeast",
+    #     "Zone8": "25_florida",
+    # }
+    # EAST_lines = [
+    #     "1",
+    #     "2",
+    #     "3",
+    #     "4",
+    #     "5",
+    #     "6",
+    # ]
+
+    # WECC_regions = {
+    #     "Zone6": "23_caiso",
+    #     "Zone9": "26_southwest",
+    #     "Zone10": "27_northwest",
+    #     "Zone11": "28_rockymountains",
+    # }
+    # WECC_lines = [
+    #     "7",
+    #     "8",
+    #     "9",
+    #     "10",
+    #     "11",
+    #     "12",
+    #     "13",
+    #     "14",
+    # ]
 
     colors = {
         "nuclear": "#E7863C",

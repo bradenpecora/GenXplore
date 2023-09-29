@@ -18,17 +18,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from matplotlib import style
+from matplotlib.lines import Line2D
+
+import GenXplore.settings as settings
+from GenXplore.capacity_expansion import capacity_by_type, capacity_by_type_per_scenario
+from GenXplore.transmission_expansion import capacity_by_line
 
 plt.style.use("default")
 # plt.style.use("dark_background")
 
-from matplotlib.lines import Line2D
-
 pd.options.mode.chained_assignment = None
-
-import settings
-from capacity_expansion import capacity_by_type, capacity_by_type_per_scenario
-from transmission_expansion import capacity_by_line
 
 
 # Functions
@@ -40,8 +39,7 @@ def annual_fix_costs(scenario, years):
                 settings.root_dir
                 / scenario
                 / "Results"
-                / "Results_p%s"
-                % str(i + 1)
+                / f"Results_p{i+1}"
                 / "costs.csv"
             )
         elif settings.multi_stage == 0:
@@ -67,8 +65,7 @@ def annual_var_costs(scenario, years):
                 settings.root_dir
                 / scenario
                 / "Results"
-                / "/Results_p%s"
-                % str(i + 1)
+                / f"Results_p{i+1}"
                 / "costs.csv"
             )
         elif settings.multi_stage == 0:
@@ -94,8 +91,7 @@ def annual_nse_costs(scenario, years):
                 settings.root_dir
                 / scenario
                 / "Results"
-                / "Results_p%s"
-                % str(i + 1)
+                / f"Results_p{i+1}"
                 / "costs.csv"
             )
         elif settings.multi_stage == 0:
@@ -121,8 +117,7 @@ def annual_start_costs(scenario, years):
                 settings.root_dir
                 / scenario
                 / "Results"
-                / "Results_p%s"
-                % str(i + 1)
+                / f"Results_p{i+1}"
                 / "costs.csv"
             )
         elif settings.multi_stage == 0:
@@ -148,8 +143,7 @@ def annual_network_expansion_costs(scenario, years):
                 settings.root_dir
                 / scenario
                 / "Results"
-                / "Results_p%s"
-                % str(i + 1)
+                / f"Results_p{i+1}"
                 / "network_expansion.csv"
             )
         elif settings.multi_stage == 0:
@@ -240,12 +234,12 @@ def cumulative_cost_diff_all_scenarios():
     )
     if os.path.exists(path):
         cost_diffs_df.to_csv(
-            path / str(settings.region) + "_" + "cost_differences_table.csv"
+            path / (str(settings.region) + "_" + "cost_differences_table.csv")
         )
     else:
         os.makedirs(path)
         cost_diffs_df.to_csv(
-            path / str(settings.region) + "_" + "cost_differences_table.csv"
+            path / (str(settings.region) + "_" + "cost_differences_table.csv")
         )
     return cost_diffs_df
 
@@ -354,16 +348,14 @@ def cumulative_cost_difference_plotter(cost_diffs_df, year):
     )
     if os.path.exists(path):
         plt.savefig(
-            path / "/%s_cost_differences_to_%s.png" % (settings.region, str(year)),
+            path / f"{settings.region}_cost_differences_to_{year}.png",
             bbox_inches="tight",
         )
         plt.clf()
     else:
         os.makedirs(path)
         plt.savefig(
-            path
-            / "/%s_cost_differences_to_%s.png"
-            % (settings.settings.region, str(year)),
+            path / f"{settings.region}_cost_differences_to_{year}.png",
             bbox_inches="tight",
         )
         plt.clf()

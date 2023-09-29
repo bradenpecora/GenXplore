@@ -11,22 +11,20 @@ Webber Energy Group
 
 # Import packages
 import os
-from sys import exit
 from pathlib import Path
+from sys import exit
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from matplotlib import style
+from matplotlib.lines import Line2D
+
+import GenXplore.settings as settings
 
 plt.style.use("default")
 # plt.style.use("dark_background")
-
-from matplotlib.lines import Line2D
-
 pd.options.mode.chained_assignment = None
-
-import settings
 
 
 # Functions
@@ -38,8 +36,7 @@ def total_annual_emissions(scenario, years):
                 settings.root_dir
                 / scenario
                 / "Results"
-                / "Results_p%s"
-                % str(i + 1)
+                / f"Results_p{str(i + 1)}"
                 / "emissions.csv"
             )
         elif settings.multi_stage == 0:
@@ -112,10 +109,10 @@ def cumulative_emissions_all_scenarios():
         settings.root_dir / "GenXplore_results" / "all_scenarios" / str(settings.region)
     )
     if os.path.exists(path):
-        emissions_df.to_csv(path / str(settings.region) + "_" + "emissions_table.csv")
+        emissions_df.to_csv(path / (str(settings.region) + "_" + "emissions_table.csv"))
     else:
         os.makedirs(path)
-        emissions_df.to_csv(path / str(settings.region) + "_" + "emissions_table.csv")
+        emissions_df.to_csv(path / (str(settings.region) + "_" + "emissions_table.csv"))
     return emissions_df
 
 
@@ -144,7 +141,7 @@ def cumulative_emissions_diff_plotter(emissions_df, year):
     emissions_df.replace(settings.scenarios_dict, inplace=True)
     emissions_df.set_index("scenario", inplace=True)
 
-    plt.figure(figsize=(10, 8))
+    plt.figure(figsize=(10, 6))
 
     barWidth = 0.3
     br = np.arange(len(emissions_df))
@@ -182,11 +179,11 @@ def cumulative_emissions_diff_plotter(emissions_df, year):
 
     plt.yticks(br, emissions_df.index, fontsize=15)
     plt.xticks(fontsize=20)
-    plt.xlim(-260, 50)
-    # plt.xlim(
-    #     -1.2 * abs(max(list(emissions_df["cumulative_emissions"]), key=abs)),
-    #     1.2 * abs(max(list(emissions_df["cumulative_emissions"]), key=abs)),
-    # )
+    # plt.xlim(-260, 50)
+    plt.xlim(
+        -1.2 * abs(max(list(emissions_df["cumulative_emissions"]), key=abs)),
+        1.2 * abs(max(list(emissions_df["cumulative_emissions"]), key=abs)),
+    )
     plt.grid(axis="x", linestyle="-", color="0.5", zorder=0)
     plt.axvline(x=0, zorder=5, color="0.5")
 
@@ -234,14 +231,15 @@ def cumulative_emissions_diff_plotter(emissions_df, year):
     )
     if os.path.exists(path):
         plt.savefig(
-            path / "/%s_emission_differences_to_%s.png" % (settings.region, str(year)),
+            path / f"{settings.region}_emission_differences_to_{year}.pdf",
             bbox_inches="tight",
+            dpi=100,
         )
         plt.clf()
     else:
         os.makedirs(path)
         plt.savefig(
-            path / "/%s_emission_differences_to_%s.png" % (settings.region, str(year)),
+            path / f"{settings.region}_emission_differences_to_{year}.png",
             bbox_inches="tight",
         )
         plt.clf()

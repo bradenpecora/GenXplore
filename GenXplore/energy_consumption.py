@@ -17,17 +17,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from matplotlib import style
+from matplotlib.lines import Line2D
 
+import GenXplore.settings as settings
 
 plt.style.use("default")
 # plt.style.use("dark_background")
-
-from matplotlib.lines import Line2D
-
 pd.options.mode.chained_assignment = None
-
-
-import settings
 
 
 # Functions
@@ -57,14 +53,11 @@ def energy_consumed_by_type():
             year = years[j]
             if settings.multi_stage == 1:
                 loc_energy_p = pd.read_csv(
-                    settings.root_dir
-                    / scenario
-                    / "/Results/Results_p%s/power.csv"
-                    % str(j + 1)
+                    settings.root_dir / scenario / (f"Results/Results_p{j+1}/power.csv")
                 )
             elif settings.multi_stage == 0:
                 loc_energy_p = pd.read_csv(
-                    settings.root_dir / scenario / "/Results/power.csv"
+                    settings.root_dir / scenario / "Results/power.csv"
                 )
             loc_energy_p = loc_energy_p.T
             loc_energy_p.reset_index(inplace=True)
@@ -257,14 +250,14 @@ def energy_consumed_by_type_plotter(tot_energy):
     )
     if os.path.exists(path):
         plt.savefig(
-            path / "%s_fuelmix_stacked_bar_plot.png" % settings.region,
+            path / f"{settings.region}_fuelmix_stacked_bar_plot.png",
             bbox_inches="tight",
         )
         plt.clf()
     else:
         os.makedirs(path)
         plt.savefig(
-            path / "%s_fuelmix_stacked_bar_plot.png" % settings.region,
+            path / f"{settings.region}_fuelmix_stacked_bar_plot.png",
             bbox_inches="tight",
         )
         plt.clf()
@@ -283,7 +276,7 @@ def dispatch_plot_builder():
                 settings.root_dir / scenario / "Inputs/Inputs_p1/Generators_data.csv"
             )
             loc_energy_p = pd.read_csv(
-                settings.root_dir / scenario / "Results/%s/power.csv" % year
+                settings.root_dir / scenario / f"Results/{year}/power.csv"
             )
         elif settings.multi_stage == 0:
             loc_tech = pd.read_csv(settings.root_dir / scenario / "Generators_data.csv")
@@ -398,8 +391,10 @@ def dispatch_plot_builder():
         if os.path.exists(path):
             plt.savefig(
                 path
-                / "%s_dispatch_%s.png"
-                % (settings.region, list(settings.model_year.values())[0]),
+                / (
+                    "%s_dispatch_%s.png"
+                    % (settings.region, list(settings.model_year.values())[0])
+                ),
                 bbox_inches="tight",
             )
             plt.clf()
@@ -407,8 +402,10 @@ def dispatch_plot_builder():
             os.makedirs(path)
             plt.savefig(
                 path
-                / "%s_dispatch_%s.png"
-                % (settings.region, list(settings.model_year.values())[0]),
+                / (
+                    "%s_dispatch_%s.png"
+                    % (settings.region, list(settings.model_year.values())[0])
+                ),
                 bbox_inches="tight",
             )
             plt.clf()

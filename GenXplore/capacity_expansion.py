@@ -17,15 +17,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from matplotlib import style
+from matplotlib.lines import Line2D
+
+import GenXplore.settings as settings
 
 plt.style.use("default")
 # plt.style.use("dark_background")
-
-from matplotlib.lines import Line2D
-
 pd.options.mode.chained_assignment = None
-
-import settings
 
 
 # Functions
@@ -46,19 +44,19 @@ def capacity_by_type():
             loc_cap = pd.read_csv(
                 Path(settings.root_dir)
                 / scenario
-                / "/Results/capacities_multi_stage.csv"
+                / "Results/capacities_multi_stage.csv"
             )
             loc_tech = pd.read_csv(
                 Path(settings.root_dir)
                 / scenario
-                / "/Inputs/Inputs_p1/Generators_data.csv"
+                / "Inputs/Inputs_p1/Generators_data.csv"
             )
         elif settings.multi_stage == 0:
             loc_cap = pd.read_csv(
-                Path(settings.root_dir) / scenario / "/Results/capacity.csv"
+                Path(settings.root_dir) / scenario / "Results/capacity.csv"
             )
             loc_tech = pd.read_csv(
-                Path(settings.root_dir) / scenario / "/Inputs/Generators_data.csv"
+                Path(settings.root_dir) / scenario / "Inputs/Generators_data.csv"
             )
         loc_tech = loc_tech[["Resource", "technology"]]
         loc_cap = loc_cap.merge(
@@ -308,14 +306,14 @@ def capacity_by_type_plotter(tot_cap):
     )
     if os.path.exists(path):
         plt.savefig(
-            path / "%s_capacityexpansion_stacked_bar_plot.png" % settings.region,
+            path / f"{settings.region}_capacityexpansion_stacked_bar_plot.png",
             bbox_inches="tight",
         )
         plt.clf()
     else:
         os.makedirs(path)
         plt.savefig(
-            path / "%s_capacityexpansion_stacked_bar_plot.png" % settings.region,
+            path / f"{settings.region}_capacityexpansion_stacked_bar_plot.png",
             bbox_inches="tight",
         )
         plt.clf()
@@ -480,14 +478,14 @@ def spec_capacity_hbar_plotter(tech):
     )
     if os.path.exists(path):
         plt.savefig(
-            path / "%s_capacity_bar_plot.png" % tech,
+            path / f"{tech}_capacity_bar_plot.png",
             bbox_inches="tight",
         )
         plt.clf()
     else:
         os.makedirs(path)
         plt.savefig(
-            path / "%s_capacity_bar_plot.png" % tech,
+            path / f"{tech}_capacity_bar_plot.png",
             bbox_inches="tight",
         )
         plt.clf()
@@ -547,14 +545,15 @@ def tot_capacity_plotter(tot_cap):
 
     count = 0
     xticks = []
-    # xlabels = [
-    #     "No Connect",
-    #     "1.5GW Connect",
-    #     "3.0GW Connect",
-    #     "6.0GW Connect",
-    #     "Optimal Connect",
-    # ]
-    xlabels = ["Base"]
+    # # xlabels = [
+    # #     "No Connect",
+    # #     "1.5GW Connect",
+    # #     "3.0GW Connect",
+    # #     "6.0GW Connect",
+    # #     "Optimal Connect",
+    # # ]
+    # xlabels = ["Base"]
+    xlabels = settings.scenarios_dict.values()
     for r in range(len(br)):
         xticks.append(count + (barWidth / 2))
         count += 1
@@ -574,7 +573,7 @@ def tot_capacity_plotter(tot_cap):
         weather_scenarios,
         loc="lower center",
         bbox_to_anchor=(0.5, -0.15),
-        ncols=len(weather_scenarios),
+        # ncols=len(weather_scenarios),
         frameon=False,
         fontsize=20,
     )
@@ -584,14 +583,14 @@ def tot_capacity_plotter(tot_cap):
     )
     if os.path.exists(path):
         plt.savefig(
-            path / "%s_total_capacity_expansion.png" % settings.region,
+            path / f"{settings.region}_total_capacity_expansion.png",
             bbox_inches="tight",
         )
         plt.clf()
     else:
         os.makedirs(path)
         plt.savefig(
-            path / "%s_total_capacity_expansion.png" % settings.region,
+            path / f"{settings.region}_total_capacity_expansion.png",
             bbox_inches="tight",
         )
         plt.clf()

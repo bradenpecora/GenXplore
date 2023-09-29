@@ -17,15 +17,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from matplotlib import style
+from matplotlib.lines import Line2D
+
+import GenXplore.settings as settings
 
 plt.style.use("default")
 # plt.style.use("dark_background")
 
-from matplotlib.lines import Line2D
-
 pd.options.mode.chained_assignment = None
-
-import settings
 
 
 # Functions
@@ -62,7 +61,7 @@ def capacity_by_line():
         scenario = scenarios[i]
         path: Path = settings.root_dir / scenario
 
-        trans_cap = pd.read_csv(path / "/Inputs/Inputs_p1/Network.csv")
+        trans_cap = pd.read_csv(path / "Inputs/Inputs_p1/Network.csv")
         trans_cap = trans_cap[["Network_Lines", "Line_Max_Flow_MW"]]
         trans_cap.rename(
             {"Network_Lines": "Line", "Line_Max_Flow_MW": years[0]},
@@ -75,8 +74,8 @@ def capacity_by_line():
                 path: Path = (
                     settings.root_dir
                     / scenario
-                    / f"/Results/Results_p{j+1}"
-                    / "/network_expansion.csv"
+                    / f"Results/Results_p{j+1}"
+                    / "network_expansion.csv"
                 )
             elif settings.multi_stage == 0:
                 path: Path = (
@@ -113,8 +112,7 @@ def flow_across_line(scenario, line):
     path: Path = (
         settings.root_dir
         / scenario
-        / "/Results/%s/flow.csv"
-        % list(settings.model_year)[0]
+        / f"Results/{list(settings.model_year)[0]}/flow.csv"
     )
 
     flow = pd.read_csv(path)
@@ -157,14 +155,14 @@ def flow_across_line(scenario, line):
     path: Path = settings.root_dir / "GenXplore_results" / scenario / settings.region
     if os.path.exists(path):
         plt.savefig(
-            path / "%s_flow_in_%s.png" % (settings.region, year),
+            path / f"{settings.region}_flow_in_{year}.png",
             bbox_inches="tight",
         )
         plt.clf()
     else:
         os.makedirs(path)
         plt.savefig(
-            path / "%s_flow_in_%s.png" % (settings.region, year),
+            path / f"{settings.region}_flow_in_{year}.png",
             bbox_inches="tight",
         )
         plt.clf()
